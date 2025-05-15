@@ -14,7 +14,6 @@ import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.TransactionIsolation;
 import guru.qa.niffler.model.users.UserJson;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.transaction.ChainedTransactionManager;
 import org.springframework.jdbc.support.JdbcTransactionManager;
@@ -46,7 +45,7 @@ public class UserDbClient {
             CFG.authJdbcUrl(), CFG.userdataJdbcUrl()
     );
 
-    private final TransactionTemplate xaTransactionTemplateChained = new TransactionTemplate(
+    private final TransactionTemplate transactionTemplateChained = new TransactionTemplate(
             new ChainedTransactionManager(
                     new JdbcTransactionManager(
                             DataSources.dataSource(CFG.authJdbcUrl())
@@ -77,7 +76,7 @@ public class UserDbClient {
     }
 
     public UserJson createUserTxJdbc(UserJson user) {
-        return xaTransactionTemplate.execute(TransactionIsolation.READ_UNCOMMITTED, () -> {
+        return xaTransactionTemplate.execute(() -> {
             AuthUserEntity authUserEntity = authUserEntity(user);
             authUserRepository.create(authUserEntity);
                     return UserJson.fromEntity(
@@ -90,7 +89,7 @@ public class UserDbClient {
     }
 
     public UserJson createUserTxChainedJdbc(UserJson user) {
-        return xaTransactionTemplateChained.execute(status -> {
+        return transactionTemplateChained.execute(status -> {
             try {
                 AuthUserEntity authUserEntity = authUserEntity(user);
 
