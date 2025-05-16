@@ -9,7 +9,9 @@ import guru.qa.niffler.data.enums.AuthorityRoles;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UserRepository;
 import guru.qa.niffler.data.repository.impl.AuthUserRepositoryHibernate;
+import guru.qa.niffler.data.repository.impl.AuthUserRepositoryJdbc;
 import guru.qa.niffler.data.repository.impl.UdUserRepositoryHibernate;
+import guru.qa.niffler.data.repository.impl.UdUserRepositoryJdbc;
 import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.TransactionIsolation;
@@ -34,6 +36,8 @@ public class UserDbClient {
 
     private final AuthUserRepository authUserRepository = new AuthUserRepositoryHibernate();
     private final UserRepository userRepository = new UdUserRepositoryHibernate();
+//    private final AuthUserRepository authUserRepository = new AuthUserRepositoryJdbc();
+//    private final UserRepository userRepository = new UdUserRepositoryJdbc();
 
     private final TransactionTemplate transactionTemplate = new TransactionTemplate(
             new JdbcTransactionManager(

@@ -125,8 +125,8 @@ public class TestExamples {
     @Test
     void addFriendInvitationTest() {
         UserDbClient db = new UserDbClient();
-        UserJson user1 = db.createUserTxChainedJdbc(generateUser());
-        UserJson user2 = db.createUserTxChainedJdbc(generateUser());
+        UserJson user1 = db.createUserJdbc(generateUser());
+        UserJson user2 = db.createUserJdbc(generateUser());
         db.addIncomeInvitation(user1.id(), user2.id());
         db.deleteUser(user1);
         db.deleteUser(user2);
