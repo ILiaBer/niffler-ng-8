@@ -8,7 +8,9 @@ import guru.qa.niffler.data.entity.user.UserEntity;
 import guru.qa.niffler.data.enums.AuthorityRoles;
 import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UserRepository;
+import guru.qa.niffler.data.repository.impl.AuthUserRepositoryHibernate;
 import guru.qa.niffler.data.repository.impl.AuthUserRepositoryJdbc;
+import guru.qa.niffler.data.repository.impl.UdUserRepositoryHibernate;
 import guru.qa.niffler.data.repository.impl.UdUserRepositoryJdbc;
 import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
@@ -32,8 +34,10 @@ public class UserDbClient {
 
     private static final PasswordEncoder ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-    private final AuthUserRepository authUserRepository = new AuthUserRepositoryJdbc();
-    private final UserRepository userRepository = new UdUserRepositoryJdbc();
+    private final AuthUserRepository authUserRepository = new AuthUserRepositoryHibernate();
+    private final UserRepository userRepository = new UdUserRepositoryHibernate();
+//    private final AuthUserRepository authUserRepository = new AuthUserRepositoryJdbc();
+//    private final UserRepository userRepository = new UdUserRepositoryJdbc();
 
     private final TransactionTemplate transactionTemplate = new TransactionTemplate(
             new JdbcTransactionManager(
@@ -45,7 +49,7 @@ public class UserDbClient {
             CFG.authJdbcUrl(), CFG.userdataJdbcUrl()
     );
 
-    private final TransactionTemplate xaTransactionTemplateChained = new TransactionTemplate(
+    private final TransactionTemplate transactionTemplateChained = new TransactionTemplate(
             new ChainedTransactionManager(
                     new JdbcTransactionManager(
                             DataSources.dataSource(CFG.authJdbcUrl())
@@ -56,25 +60,29 @@ public class UserDbClient {
             )
     );
 
-    public UserJson createUserTxJdbc(UserJson user) {
-        return xaTransactionTemplate.execute(TransactionIsolation.READ_UNCOMMITTED, () -> {
-                    AuthUserEntity authUserEntity = new AuthUserEntity();
-                    authUserEntity.setUsername(user.username());
-                    authUserEntity.setPassword(ENCODER.encode(user.password()));
-                    authUserEntity.setEnabled(true);
-                    authUserEntity.setAccountNonExpired(true);
-                    authUserEntity.setAccountNonLocked(true);
-                    authUserEntity.setCredentialsNonExpired(true);
-                    authUserEntity.setAuthorities(Arrays.stream(AuthorityRoles.values()).map(
-                            e -> {
-                                AuthAuthorityEntity ae = new AuthAuthorityEntity();
-                                ae.setUser(authUserEntity);
-                                ae.setAuthority(e);
-                                return ae;
-                            }
-                    ).toList());
+    private AuthUserEntity authUserEntity(UserJson user) {
+        AuthUserEntity authUserEntity = new AuthUserEntity();
+        authUserEntity.setUsername(user.username());
+        authUserEntity.setPassword(ENCODER.encode(user.password()));
+        authUserEntity.setEnabled(true);
+        authUserEntity.setAccountNonExpired(true);
+        authUserEntity.setAccountNonLocked(true);
+        authUserEntity.setCredentialsNonExpired(true);
+        authUserEntity.setAuthorities(Arrays.stream(AuthorityRoles.values()).map(
+                e -> {
+                    AuthAuthorityEntity ae = new AuthAuthorityEntity();
+                    ae.setUser(authUserEntity);
+                    ae.setAuthority(e);
+                    return ae;
+                }
+        ).toList());
+        return authUserEntity;
+    }
 
-                    authUserRepository.create(authUserEntity);
+    public UserJson createUserTxJdbc(UserJson user) {
+        return xaTransactionTemplate.execute(() -> {
+            AuthUserEntity authUserEntity = authUserEntity(user);
+            authUserRepository.create(authUserEntity);
                     return UserJson.fromEntity(
                             userRepository.create(
                                     UserEntity.fromJson(user))
@@ -85,23 +93,9 @@ public class UserDbClient {
     }
 
     public UserJson createUserTxChainedJdbc(UserJson user) {
-        return xaTransactionTemplateChained.execute(status -> {
+        return transactionTemplateChained.execute(status -> {
             try {
-                AuthUserEntity authUserEntity = new AuthUserEntity();
-                authUserEntity.setUsername(user.username());
-                authUserEntity.setPassword(ENCODER.encode(user.password()));
-                authUserEntity.setEnabled(true);
-                authUserEntity.setAccountNonExpired(true);
-                authUserEntity.setAccountNonLocked(true);
-                authUserEntity.setCredentialsNonExpired(true);
-                authUserEntity.setAuthorities(Arrays.stream(AuthorityRoles.values()).map(
-                        e -> {
-                            AuthAuthorityEntity ae = new AuthAuthorityEntity();
-                            ae.setUser(authUserEntity);
-                            ae.setAuthority(e);
-                            return ae;
-                        }
-                ).toList());
+                AuthUserEntity authUserEntity = authUserEntity(user);
 
                 authUserRepository.create(authUserEntity);
                 return UserJson.fromEntity(
@@ -118,21 +112,7 @@ public class UserDbClient {
 
     public UserJson createUserJdbc(UserJson user) {
 
-        AuthUserEntity authUserEntity = new AuthUserEntity();
-        authUserEntity.setUsername(user.username());
-        authUserEntity.setPassword(ENCODER.encode(user.password()));
-        authUserEntity.setEnabled(true);
-        authUserEntity.setAccountNonExpired(true);
-        authUserEntity.setAccountNonLocked(true);
-        authUserEntity.setCredentialsNonExpired(true);
-        authUserEntity.setAuthorities(Arrays.stream(AuthorityRoles.values()).map(
-                e -> {
-                    AuthAuthorityEntity ae = new AuthAuthorityEntity();
-                    ae.setUser(authUserEntity);
-                    ae.setAuthority(e);
-                    return ae;
-                }
-        ).toList());
+        AuthUserEntity authUserEntity = authUserEntity(user);
 
         authUserRepository.create(authUserEntity);
 
