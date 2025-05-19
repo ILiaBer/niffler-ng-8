@@ -81,8 +81,8 @@ public class UserDbClient {
 
     public UserJson createUserTxJdbc(UserJson user) {
         return xaTransactionTemplate.execute(() -> {
-            AuthUserEntity authUserEntity = authUserEntity(user);
-            authUserRepository.create(authUserEntity);
+                    AuthUserEntity authUserEntity = authUserEntity(user);
+                    authUserRepository.create(authUserEntity);
                     return UserJson.fromEntity(
                             userRepository.create(
                                     UserEntity.fromJson(user))
@@ -111,13 +111,14 @@ public class UserDbClient {
     }
 
     public UserJson createUserJdbc(UserJson user) {
+        return xaTransactionTemplate.execute(() -> {
+                    AuthUserEntity authUserEntity = authUserEntity(user);
+                    authUserRepository.create(authUserEntity);
 
-        AuthUserEntity authUserEntity = authUserEntity(user);
-
-        authUserRepository.create(authUserEntity);
-
-        return UserJson.fromEntity(
-                userRepository.create(UserEntity.fromJson(user)));
+                    return UserJson.fromEntity(
+                            userRepository.create(UserEntity.fromJson(user)));
+                }
+        );
     }
 
     public void addIncomeInvitation(UUID requesterUUID, UUID addresseeUUID) {

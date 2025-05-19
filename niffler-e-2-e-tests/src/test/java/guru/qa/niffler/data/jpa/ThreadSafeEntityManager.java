@@ -230,11 +230,7 @@ public class ThreadSafeEntityManager implements EntityManager {
 
     @Override
     public void joinTransaction() {
-        // Если текущая транзакция неактивная, то стартуем ее
-        EntityTransaction transaction = threadEm().getTransaction();
-        if (!transaction.isActive()) {
-            transaction.begin();
-        }
+        threadEm().joinTransaction();
     }
 
     @Override
