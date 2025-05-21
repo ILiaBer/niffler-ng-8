@@ -1,6 +1,7 @@
 package guru.qa.niffler.data.repository.impl;
 
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.data.entity.user.FriendshipStatus;
 import guru.qa.niffler.data.entity.user.UserEntity;
 import guru.qa.niffler.data.jpa.EntityManagers;
 import guru.qa.niffler.data.repository.UserRepository;
@@ -28,17 +29,21 @@ public class UdUserRepositoryHibernate implements UserRepository {
 
     @Override
     public void addIncomeInvitation(UserEntity requester, UserEntity addressee) {
-
+        em.joinTransaction();
+        requester.addFriends(FriendshipStatus.PENDING, requester);
     }
 
     @Override
     public void addOutcomeInvitation(UserEntity requester, UserEntity addressee) {
-
+        em.joinTransaction();
+        requester.addFriends(FriendshipStatus.PENDING, addressee);
     }
 
     @Override
     public void addFriend(UserEntity requester, UserEntity addressee) {
-
+        em.joinTransaction();
+        requester.addFriends(FriendshipStatus.ACCEPTED, addressee);
+        addressee.addFriends(FriendshipStatus.ACCEPTED, requester);
     }
 
     @Override
