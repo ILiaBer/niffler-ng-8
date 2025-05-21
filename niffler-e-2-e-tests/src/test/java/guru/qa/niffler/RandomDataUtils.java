@@ -26,7 +26,7 @@ public class RandomDataUtils {
         return stringBuilder.toString();
     }
 
-    public static String randomUserName() {
+    public static String randomUsername() {
         return new Faker().name().username();
     }
 

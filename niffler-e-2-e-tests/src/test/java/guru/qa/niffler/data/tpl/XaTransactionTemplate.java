@@ -23,7 +23,7 @@ public class XaTransactionTemplate {
         return this;
     }
 
-    public <T> T execute(TransactionIsolation transactionIsolation, Supplier<T>... actions) {
+    public <T> T execute(Supplier<T>... actions) {
         UserTransaction userTransaction = new UserTransactionImp();
         try {
             userTransaction.begin();

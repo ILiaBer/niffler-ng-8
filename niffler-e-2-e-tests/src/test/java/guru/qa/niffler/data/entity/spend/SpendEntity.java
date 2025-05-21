@@ -73,4 +73,17 @@ public class SpendEntity implements Serializable {
         se.setCategory(CategoryEntity.fromJson(json.category()));
         return se;
     }
+
+    @Override
+    public String toString() {
+        return "SpendEntity{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", currency=" + currency +
+                ", spendDate=" + spendDate +
+                ", amount=" + amount +
+                ", description='" + description + '\'' +
+                ", category=" + category +
+                '}';
+    }
 }

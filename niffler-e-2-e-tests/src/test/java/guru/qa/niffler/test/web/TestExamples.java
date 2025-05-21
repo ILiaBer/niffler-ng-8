@@ -9,15 +9,18 @@ import guru.qa.niffler.model.users.UserJson;
 import guru.qa.niffler.service.SpendDbClient;
 import guru.qa.niffler.service.UserDbClient;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Date;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 public class TestExamples {
 
     private static final Config CFG = Config.getInstance();
 
-    private UserJson generateUser() {
+    private static UserJson generateUser() {
         Faker faker = new Faker();
         return new UserJson(
                 UUID.randomUUID(),
@@ -125,8 +128,8 @@ public class TestExamples {
     @Test
     void addFriendInvitationTest() {
         UserDbClient db = new UserDbClient();
-        UserJson user1 = db.createUserTxChainedJdbc(generateUser());
-        UserJson user2 = db.createUserTxChainedJdbc(generateUser());
+        UserJson user1 = db.createUserJdbc(generateUser());
+        UserJson user2 = db.createUserJdbc(generateUser());
         db.addIncomeInvitation(user1.id(), user2.id());
         db.deleteUser(user1);
         db.deleteUser(user2);
@@ -148,5 +151,29 @@ public class TestExamples {
         UserJson user1 = db.createUserTxChainedJdbc(generateUser());
         UserJson user2 = db.createUserTxChainedJdbc(generateUser());
         db.addFriend(user1.id(), user2.id());
+    }
+
+    @Test
+    void addFriendTest2() {
+        UserDbClient db = new UserDbClient();
+        UserJson user1 = db.createUserJdbc(generateUser());
+        db.addIncomeInvitation(user1, 1);
+    }
+
+
+    @MethodSource("userProvider")
+    @ParameterizedTest()
+    void checkUsersCanBeCreatedTest(UserJson user) {
+        UserDbClient db = new UserDbClient();
+        db.createUserTxChainedJdbc(user);
+        db.checkUserExists(user);
+    }
+
+    private static Stream<UserJson> userProvider() {
+        return Stream.of(
+                generateUser(),
+                generateUser(),
+                generateUser()
+        );
     }
 }

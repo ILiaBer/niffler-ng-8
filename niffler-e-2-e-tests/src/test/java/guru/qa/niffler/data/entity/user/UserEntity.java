@@ -114,13 +114,14 @@ public class UserEntity implements Serializable {
     }
 
     public static UserEntity fromJson(UserJson json) {
-        UserEntity se = new UserEntity();
-        se.setId(json.id());
-        se.setUsername(json.username());
-        se.setCurrency(json.currency());
-        se.setFullName(json.fullname());
-        se.setFirstName(json.firstname());
-        se.setSurname(json.surname());
-        return se;
+        UserEntity ue = new UserEntity();
+        ue.setUsername(json.username());
+        ue.setCurrency(json.currency());
+        ue.setFullName(json.fullname());
+        ue.setFirstName(json.firstname());
+        ue.setSurname(json.surname());
+        ue.setFriendshipRequests(new ArrayList<>());
+        ue.setFriendshipAddressees(new ArrayList<>());
+        return ue;
     }
 }

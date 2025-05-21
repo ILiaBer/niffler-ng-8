@@ -1,6 +1,8 @@
 package guru.qa.niffler.data.repository.impl;
 
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.data.dao.impl.jdbc.AuthUserDaoJdbc;
+import guru.qa.niffler.data.dao.interfaces.AuthUserDao;
 import guru.qa.niffler.data.entity.auth.AuthAuthorityEntity;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.enums.AuthorityRoles;
@@ -25,6 +27,7 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
     private static final PasswordEncoder ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     private static final Config CFG = Config.getInstance();
+    private final AuthUserDao authUserDao = new AuthUserDaoJdbc();
 
     @Override
     public AuthUserEntity create(AuthUserEntity authUserEntity) {
@@ -185,5 +188,11 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public AuthUserEntity update(AuthUserEntity user) {
+        authUserDao.update(user);
+        return user;
     }
 }
