@@ -31,10 +31,10 @@ public class AuthUserRepositoryHibernate implements AuthUserRepository {
     @Override
     public Optional<AuthUserEntity> findByName(String name) {
         try {
-         return Optional.of(em.createQuery(
-                 "select u from AuthUserEntity u where u.username = :name", AuthUserEntity.class)
+            return Optional.of(em.createQuery(
+                            "select u from AuthUserEntity u where u.username = :name", AuthUserEntity.class)
                     .setParameter("name", name).getSingleResult());
-        }catch (NoResultException e){
+        } catch (NoResultException e) {
             return Optional.empty();
         }
     }
@@ -50,7 +50,15 @@ public class AuthUserRepositoryHibernate implements AuthUserRepository {
     }
 
     @Override
-    public void deleteUser(AuthUserEntity entity) {
+    public void deleteUser(AuthUserEntity user) {
+        em.joinTransaction();
+        em.remove(user);
+    }
 
+    @Override
+    public AuthUserEntity update(AuthUserEntity user) {
+        em.joinTransaction();
+        em.merge(user);
+        return user;
     }
 }

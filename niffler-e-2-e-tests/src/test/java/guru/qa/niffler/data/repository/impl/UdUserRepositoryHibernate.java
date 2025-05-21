@@ -6,6 +6,7 @@ import guru.qa.niffler.data.entity.user.UserEntity;
 import guru.qa.niffler.data.jpa.EntityManagers;
 import guru.qa.niffler.data.repository.UserRepository;
 import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -53,6 +54,16 @@ public class UdUserRepositoryHibernate implements UserRepository {
 
     @Override
     public void deleteUser(UserEntity user) {
+        em.joinTransaction();
+        UserEntity userEntity = em.find(UserEntity.class, user.getId());
+        Assertions.assertNotNull(userEntity);
+        em.remove(userEntity);
+    }
 
+    @Override
+    public UserEntity update(UserEntity user) {
+        em.joinTransaction();
+        em.merge(user);
+        return user;
     }
 }

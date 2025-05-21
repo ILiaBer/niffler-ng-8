@@ -3,6 +3,7 @@ package guru.qa.niffler.service;
 
 import guru.qa.niffler.RandomDataUtils;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.data.dao.impl.springJdbc.AuthUserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.auth.AuthAuthorityEntity;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.user.UserEntity;
@@ -179,12 +180,6 @@ public class UserDbClient {
                 );
             }
         }
-    }
-
-    ;
-
-    public void addFriend(UserEntity requester, UserEntity addressee) {
-
     }
 
     private UserEntity userEntity(String username) {

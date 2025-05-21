@@ -11,9 +11,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static guru.qa.niffler.data.tpl.Connections.holder;
 
 public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
@@ -41,6 +44,31 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
         final UUID generatedKey = (UUID) keyHolder.getKeys().get("id");
         authUserEntity.setId(generatedKey);
         return authUserEntity;
+    }
+
+    @Override
+    public AuthUserEntity update(AuthUserEntity entity) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
+        jdbcTemplate.update(con -> {
+            PreparedStatement ps = con.prepareStatement(
+                    "UPDATE \"user\" SET " +
+                            "username = ?," +
+                            "password = ?," +
+                            "enabled = ?," +
+                            "account_non_expired = ?," +
+                            "account_non_locked = ?," +
+                            "credentials_non_expired = ?" +
+                            "WHERE id = ?");
+            ps.setString(1, entity.getUsername());
+            ps.setString(2, entity.getPassword());
+            ps.setBoolean(3, entity.getEnabled());
+            ps.setBoolean(4, entity.getAccountNonExpired());
+            ps.setBoolean(5, entity.getAccountNonLocked());
+            ps.setBoolean(6, entity.getCredentialsNonExpired());
+            ps.setObject(7, entity.getId());
+            return ps;
+        });
+        return entity;
     }
 
     @Override
