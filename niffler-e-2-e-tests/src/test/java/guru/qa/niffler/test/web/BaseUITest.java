@@ -1,5 +1,7 @@
 package guru.qa.niffler.test.web;
 
+import com.codeborne.selenide.SelenideConfig;
+import com.codeborne.selenide.SelenideDriver;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.page.AllPages;
 import guru.qa.niffler.service.SpendDbClient;

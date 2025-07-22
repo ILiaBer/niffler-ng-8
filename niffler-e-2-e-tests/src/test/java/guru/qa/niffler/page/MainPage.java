@@ -11,5 +11,4 @@ public class MainPage extends BasePage {
     public SpendingTable table = new SpendingTable();
     public LineEdit search = new LineEdit(By.xpath("//input"));
     public final StatComponent bubbles = new StatComponent(By.cssSelector("#legend-container"));
-
 }

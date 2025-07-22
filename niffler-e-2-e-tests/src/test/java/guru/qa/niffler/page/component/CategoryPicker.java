@@ -1,12 +1,12 @@
 package guru.qa.niffler.page.component;
 
 import guru.qa.niffler.utils.RandomDataUtils;
+import guru.qa.niffler.utils.SelenideUtils;
 import org.openqa.selenium.By;
 
 import static com.codeborne.selenide.Condition.exist;
-import static com.codeborne.selenide.Selenide.$;
 
-public class CategoryPicker extends BaseComponent{
+public class CategoryPicker extends BaseComponent {
 
     private By loc;
 
@@ -15,14 +15,14 @@ public class CategoryPicker extends BaseComponent{
     }
 
 
-    public CategoryPicker pickRandomCategory(){
-            int randomNum = RandomDataUtils.getRandomNumberInRange(0, getSizeSelect());
-            $(loc).$(By.xpath("./li[" + randomNum + "]")).should(exist).click();
-            return this;
-        }
+    public CategoryPicker pickRandomCategory() {
+        int randomNum = RandomDataUtils.getRandomNumberInRange(0, getSizeSelect());
+         SelenideUtils.chromeDriver.$(loc).$(By.xpath("./li[" + randomNum + "]")).should(exist).click();
+        return this;
+    }
 
     private int getSizeSelect() {
-        $(loc).$(By.xpath("./li")).should(exist);
-        return $(loc).$$(By.xpath("./li")).size();
+         SelenideUtils.chromeDriver.$(loc).$(By.xpath("./li")).should(exist);
+        return  SelenideUtils.chromeDriver.$(loc).$$(By.xpath("./li")).size();
     }
 }

@@ -1,12 +1,10 @@
 package guru.qa.niffler.page.component.basicComponents;
 
 import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.WebDriverRunner;
 import guru.qa.niffler.page.component.BaseComponent;
+import guru.qa.niffler.utils.SelenideUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
-
-import static com.codeborne.selenide.Selenide.$;
 
 public class Button extends BaseComponent {
 
@@ -17,15 +15,15 @@ public class Button extends BaseComponent {
     }
 
     public Button click(){
-        $(locator).scrollTo();
-        $(locator).click();
+         SelenideUtils.chromeDriver.$(locator).scrollTo();
+         SelenideUtils.chromeDriver.$(locator).click();
         return this;
     }
 
     public Button jsClick(){
-        JavascriptExecutor js = (JavascriptExecutor) WebDriverRunner.getWebDriver();
-        $(locator).shouldBe(Condition.visible);
-        js.executeScript("arguments[0].click();", $(locator));
+        JavascriptExecutor js = (JavascriptExecutor)  SelenideUtils.chromeDriver.getWebDriver();
+         SelenideUtils.chromeDriver.$(locator).shouldBe(Condition.visible);
+        js.executeScript("arguments[0].click();",  SelenideUtils.chromeDriver.$(locator));
         return this;
     }
 }

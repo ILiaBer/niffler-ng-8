@@ -1,19 +1,26 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.SelenideDriver;
 import com.codeborne.selenide.SelenideElement;
 
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$x;
+public class RegisterPage extends BasePage {
 
-public class RegisterPage extends BasePage{
+    private final SelenideElement usernameInput;
+    private final SelenideElement passwordInput;
+    private final SelenideElement passwordSubmitInput;
+    private final SelenideElement signUpBtn;
+    private final SelenideElement signInBtn;
+    private final SelenideElement error;
 
-    private final SelenideElement usernameInput = $("#username");
-    private final SelenideElement passwordInput = $("#password");
-    private final SelenideElement passwordSubmitInput = $("#passwordSubmit");
-    private final SelenideElement signUpBtn = $x("//button[contains(text(),'Sign Up')]");
-    private final SelenideElement signInBtn = $x("//a[contains(text(),'Sign in')]");
-    private final SelenideElement error = $x("//span[contains(@class,'form__error')]");
+    public RegisterPage(SelenideDriver driver) {
+        this.usernameInput = driver.$("#username");
+        this.passwordInput = driver.$("#password");
+        this.passwordSubmitInput = driver.$("#passwordSubmit");
+        this.signUpBtn = driver.$x("//button[contains(text(),'Sign Up')]");
+        this.signInBtn = driver.$x("//a[contains(text(),'Sign in')]");
+        this.error = driver.$x("//span[contains(@class,'form__error')]");
+    }
 
     public RegisterPage setUsername(String username) {
         usernameInput.sendKeys(username);

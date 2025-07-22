@@ -4,13 +4,12 @@ import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import guru.qa.niffler.data.enums.Month;
+import guru.qa.niffler.utils.SelenideUtils;
 import org.openqa.selenium.By;
 
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
 
 public class DatePicker extends BaseComponent{
 
@@ -29,7 +28,7 @@ public class DatePicker extends BaseComponent{
     }
 
     public DatePicker clickForOpenCalendar() {
-        $(loc).click();
+         SelenideUtils.chromeDriver.$(loc).click();
         return this;
     }
 
@@ -42,7 +41,7 @@ public class DatePicker extends BaseComponent{
     }
 
     public DatePicker setMonth(String month) {
-        String monthText = $(yearsBtn).getText();
+        String monthText =  SelenideUtils.chromeDriver.$(yearsBtn).getText();
         Month targetMonth = getMonthFromString(month);
         String[] parts = monthText.split(" ");
         String displayedMonthText = parts[0];
@@ -53,13 +52,13 @@ public class DatePicker extends BaseComponent{
         } else if (displayedMonth.getNumMonth() < targetMonth.getNumMonth()) {
             int difference = targetMonth.getNumMonth() - displayedMonth.getNumMonth();
             for (int j = 0; j <= difference; j++) {
-                $(nextMouthBtn).click();
+                 SelenideUtils.chromeDriver.$(nextMouthBtn).click();
             }
             return this;
         } else if (displayedMonth.getNumMonth() > targetMonth.getNumMonth()) {
             int difference = displayedMonth.getNumMonth() - targetMonth.getNumMonth();
             for (int j = 0; j <= difference; j++) {
-                $(previousMouthBtn).click();
+                 SelenideUtils.chromeDriver.$(previousMouthBtn).click();
             }
             return this;
         }
@@ -67,8 +66,8 @@ public class DatePicker extends BaseComponent{
     }
 
     public DatePicker setYear(String month) {
-        $(yearsBtn).click();
-        ElementsCollection cells = $$(yearsCells);
+         SelenideUtils.chromeDriver.$(yearsBtn).click();
+        ElementsCollection cells =  SelenideUtils.chromeDriver.$$(yearsCells);
         cells = cells.filterBy(Condition.text(month));
         cells.shouldHave(CollectionCondition.sizeGreaterThan(0));
         cells.first().scrollTo();
@@ -77,7 +76,7 @@ public class DatePicker extends BaseComponent{
     }
 
     public DatePicker setDay(Integer day) {
-        ElementsCollection cells = $$(daysCells);
+        ElementsCollection cells =  SelenideUtils.chromeDriver.$$(daysCells);
         cells = cells.filterBy(Condition.text(day.toString()));
         cells.shouldHave(CollectionCondition.sizeGreaterThan(0));
         if ((cells.size() == 1) || (day < 15)) {

@@ -5,22 +5,21 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.data.enums.FriendType;
 import guru.qa.niffler.page.component.basicComponents.Table;
-import org.openqa.selenium.By;
-
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$x;
+import guru.qa.niffler.utils.SelenideUtils;
 
 public class FriendsTable extends Table {
 
-    private SelenideElement myFrendsTable = $x("//h2[.='My friends']//following::table");
+    private SelenideElement myFrendsTable =  SelenideUtils.chromeDriver.$x("//h2[.='My friends']//following::table");
 
 
     public FriendsTable checkTableContainsFriendWithStatus(String name, FriendType friendType) {
         String path = "//table//tr//*[contains(text(), " + name + ")]";
         switch (friendType) {
-            case FRIEND -> $x(path).shouldBe(Condition.visible);
-            case INCOME -> $x(path + "//following::*[text() ='Accept']").shouldBe(Condition.visible);
-            case OUTCOME -> $x(path + "//following::*[text() ='Waiting...']").shouldBe(Condition.visible);
+            case FRIEND ->  SelenideUtils.chromeDriver.$x(path).shouldBe(Condition.visible);
+            case INCOME ->
+                     SelenideUtils.chromeDriver.$x(path + "//following::*[text() ='Accept']").shouldBe(Condition.visible);
+            case OUTCOME ->
+                     SelenideUtils.chromeDriver.$x(path + "//following::*[text() ='Waiting...']").shouldBe(Condition.visible);
         }
         return this;
     }
@@ -40,25 +39,25 @@ public class FriendsTable extends Table {
     }
 
     public FriendsTable checkFriendExist(String text) {
-        SelenideElement row = $(myFrendsTable).$x(".//tr").$x(".//*[contains(text(), " + text + ")]//ancestor::tr");
+        SelenideElement row =  SelenideUtils.chromeDriver.$(myFrendsTable).$x(".//tr").$x(".//*[contains(text(), " + text + ")]//ancestor::tr");
         row.shouldBe(Condition.visible);
         return this;
     }
 
     public FriendsTable checkFriendNotExist(String text) {
-        SelenideElement row = $(myFrendsTable).$x(".//tr").$x(".//*[contains(text(), " + text + ")]//ancestor::tr");
+        SelenideElement row =  SelenideUtils.chromeDriver.$(myFrendsTable).$x(".//tr").$x(".//*[contains(text(), " + text + ")]//ancestor::tr");
         row.shouldNotBe(Condition.visible);
         return this;
     }
 
     public FriendsTable unfriend(String username) {
-        SelenideElement row = $(myFrendsTable).$x(".//tr").$x(".//*[contains(text(), " + username + ")]//ancestor::tr");
+        SelenideElement row =  SelenideUtils.chromeDriver.$(myFrendsTable).$x(".//tr").$x(".//*[contains(text(), " + username + ")]//ancestor::tr");
         row.$x(".//button[.='Unfriend']").click();
         return this;
     }
 
-    public Table checkFriendsCount(int count){
+    public Table checkFriendsCount(int count) {
         myFrendsTable.$$(rows).shouldBe(CollectionCondition.size(count));
-            return this;
+        return this;
     }
 }

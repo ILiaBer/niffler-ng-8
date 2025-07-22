@@ -1,6 +1,5 @@
 package guru.qa.niffler.test.web;
 
-import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.api.SpendApiClient;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.enums.CurrencyValues;
@@ -10,6 +9,7 @@ import guru.qa.niffler.jupiter.extensions.BrowserExtension;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.utils.RandomDataUtils;
+import guru.qa.niffler.utils.SelenideUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -31,7 +31,7 @@ public class SpendingTest extends BaseUITest {
     void spendingDescriptionShouldBeUpdatedByTableActionTest(SpendJson spend) {
         final String newDescription = "Обучение Niffler NG";
 
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+         SelenideUtils.chromeDriver.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin("test", "12345");
         mainPage().table.editSpendingByDescription(spend.description());
         spendingPage().description.clearThenFill(newDescription);
@@ -50,7 +50,7 @@ public class SpendingTest extends BaseUITest {
         SpendJson spend = RandomDataUtils.generateSpend(actualLogin, 500.0);
 
         spendDbClient.createSpend(spend);
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+         SelenideUtils.chromeDriver.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(actualLogin, actualPass);
 
         Thread.sleep(3000);
