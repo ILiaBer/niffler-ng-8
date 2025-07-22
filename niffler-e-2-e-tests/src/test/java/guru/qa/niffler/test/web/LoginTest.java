@@ -3,6 +3,7 @@ package guru.qa.niffler.test.web;
 import com.codeborne.selenide.SelenideDriver;
 import com.github.javafaker.Faker;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.data.enums.Browser;
 import guru.qa.niffler.data.enums.CurrencyValues;
 import guru.qa.niffler.jupiter.annotations.Category;
 import guru.qa.niffler.jupiter.annotations.Spend;
@@ -14,9 +15,13 @@ import guru.qa.niffler.page.AllPeoplePage;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.page.ProfilePage;
 import guru.qa.niffler.page.RegisterPage;
+import guru.qa.niffler.utils.BrowserConverterUtils;
 import guru.qa.niffler.utils.SelenideUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.converter.ConvertWith;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.util.List;
 
@@ -28,7 +33,7 @@ public class LoginTest extends BaseUITest {
 
 
     @RegisterExtension
-    private final BrowserExtension browserExtension = new BrowserExtension();
+    private static final BrowserExtension browserExtension = new BrowserExtension();
 
     @Spend(
             username = "duck",
@@ -81,7 +86,19 @@ public class LoginTest extends BaseUITest {
                 .setPassword(actualPass)
                 .setPasswordSubmit(actualPass)
                 .signUp().checkError("Username `" + actualLogin + "` already exists");
+
         new LoginPage(firefox).doLogin(actualLogin, actualPass);
+    }
+
+    @ParameterizedTest
+    @EnumSource(Browser.class)
+    void shouldNotRegisterUserWithExistingUsername(@ConvertWith(BrowserConverterUtils.class) SelenideDriver driver) {
+        driver.open(CFG.frontUrl());
+        new LoginPage(driver).clickCreateNewAccount();
+        new RegisterPage(driver).setUsername(actualLogin)
+                .setPassword(actualPass)
+                .setPasswordSubmit(actualPass)
+                .signUp().checkError("Username `" + actualLogin + "` already exists");
     }
 
     @Test
