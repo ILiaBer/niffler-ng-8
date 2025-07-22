@@ -4,21 +4,21 @@ import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.AllPeoplePage;
 import guru.qa.niffler.page.FriendsPage;
 import guru.qa.niffler.page.ProfilePage;
+import guru.qa.niffler.utils.SelenideUtils;
 
-import static com.codeborne.selenide.Selenide.$x;
 
-public class Header extends BaseComponent{
+public class Header extends BaseComponent {
 
 
     public Header() {
     }
 
-    private final SelenideElement menu = $x("//button[@aria-label='Menu']");
-    private final SelenideElement profile = $x("//*[contains(text(),'Profile')]");
-    private final SelenideElement friends = $x("//*[contains(text(),'Friends')]");
-    private final SelenideElement allPeople = $x("//*[contains(text(),'All People')]");
-    private final SelenideElement signOut = $x("//*[contains(text(),'Sign Out')]");
-    private final SelenideElement newSpending = $x("//*[contains(text(),'New spending')]");
+    private final SelenideElement menu =  SelenideUtils.chromeDriver.$x("//button[@aria-label='Menu']");
+    private final SelenideElement profile = SelenideUtils.chromeDriver.$x("//*[contains(text(),'Profile')]");
+    private final SelenideElement friends = SelenideUtils.chromeDriver.$x("//*[contains(text(),'Friends')]");
+    private final SelenideElement allPeople = SelenideUtils.chromeDriver.$x("//*[contains(text(),'All People')]");
+    private final SelenideElement signOut = SelenideUtils.chromeDriver.$x("//*[contains(text(),'Sign Out')]");
+    private final SelenideElement newSpending = SelenideUtils.chromeDriver.$x("//*[contains(text(),'New spending')]");
 
 
     public FriendsPage toFriendsPage() {
@@ -40,7 +40,7 @@ public class Header extends BaseComponent{
     }
 
     public Header toMainPage() {
-        $x("//h1").click();
+        SelenideUtils.chromeDriver.$x("//h1").click();
         return this;
     }
 

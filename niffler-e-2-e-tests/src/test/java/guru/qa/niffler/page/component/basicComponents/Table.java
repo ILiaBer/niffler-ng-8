@@ -4,10 +4,8 @@ import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.BaseComponent;
+import guru.qa.niffler.utils.SelenideUtils;
 import org.openqa.selenium.By;
-
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$x;
 
 
 public class Table extends BaseComponent {
@@ -18,11 +16,11 @@ public class Table extends BaseComponent {
 
 
     protected SelenideElement findRowByText(String text) {
-            return $("//table//tr//*[contains(text(), '" + text + "')]//ancestor::tr");
+            return  SelenideUtils.chromeDriver.$("//table//tr//*[contains(text(), '" + text + "')]//ancestor::tr");
     }
 
     public Table checkTableSize(int count) {
-        $(table).$$(rows).shouldBe(CollectionCondition.size(count));
+        SelenideUtils.chromeDriver.$(table).$$(rows).shouldBe(CollectionCondition.size(count));
         return this;
     }
 
@@ -32,12 +30,12 @@ public class Table extends BaseComponent {
     }
 
     public Table checkTableVisible() {
-        $(table).shouldBe(Condition.visible);
+        SelenideUtils.chromeDriver.$(table).shouldBe(Condition.visible);
         return this;
     }
 
     public Table checkTableNotVisible() {
-        $(table).shouldNotBe(Condition.visible);
+        SelenideUtils.chromeDriver.$(table).shouldNotBe(Condition.visible);
         return this;
     }
 }

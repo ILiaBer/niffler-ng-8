@@ -1,9 +1,9 @@
 package guru.qa.niffler.page.component.basicComponents;
 
 import guru.qa.niffler.page.component.BaseComponent;
+import guru.qa.niffler.utils.SelenideUtils;
 import org.openqa.selenium.By;
 
-import static com.codeborne.selenide.Selenide.$;
 
 public class LineEdit extends BaseComponent {
 
@@ -14,14 +14,14 @@ public class LineEdit extends BaseComponent {
     protected By locator;
 
     public LineEdit fill(String value) {
-        $(locator).scrollTo();
-        $(locator).sendKeys(value);
+         SelenideUtils.chromeDriver.$(locator).scrollTo();
+         SelenideUtils.chromeDriver.$(locator).sendKeys(value);
         return this;
     }
 
     public LineEdit clear() {
-        $(locator).scrollTo();
-        $(locator).clear();
+         SelenideUtils.chromeDriver.$(locator).scrollTo();
+         SelenideUtils.chromeDriver.$(locator).clear();
         return this;
     }
 
