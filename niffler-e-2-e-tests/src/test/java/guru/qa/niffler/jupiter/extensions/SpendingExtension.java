@@ -55,9 +55,7 @@ public class SpendingExtension implements BeforeEachCallback, AfterEachCallback,
         SpendDbClient db = new SpendDbClient();
         if (spend != null) {
             db.deleteTxSpend(spend);
-        }
-        assert spend != null;
-        if (spend.category() != null) {
+        if (spend.category() != null)
             db.deleteTxCategory(spend.category());
         }
     }
