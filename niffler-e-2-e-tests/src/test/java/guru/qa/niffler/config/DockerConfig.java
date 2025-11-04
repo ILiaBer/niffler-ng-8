@@ -5,60 +5,55 @@ enum DockerConfig implements Config {
 
 
     public String mainUserLogin() {
-        return "";
+        return "test";
     }
 
     public String mainUserPass() {
-        return "";
+        return "12345";
     }
 
     @Override
     public String frontUrl() {
-        return "";
+        return "http://frontend.niffler.dc/main";
     }
 
     @Override
     public String spendUrl() {
-        return "";
+        return "http://127.0.0.1:8093/";
     }
 
     @Override
     public String spendJdbcUrl() {
-        return "";
+        return "jdbc:postgresql://127.0.0.1:5432/niffler-spend";
     }
 
     @Override
     public String authUrl() {
-        return "";
+        return "http://127.0.0.1:9000/";
     }
 
     @Override
     public String authJdbcUrl() {
-        return "";
+        return "jdbc:postgresql://127.0.0.1:5432/niffler-auth";
     }
 
     @Override
     public String gatewayUrl() {
-        return "";
+        return "http://127.0.0.1:8090/";
     }
 
     @Override
     public String userdataUrl() {
-        return "";
+        return "http://127.0.0.1:8089/";
     }
 
     @Override
     public String userdataJdbcUrl() {
-        return "";
+        return "jdbc:postgresql://127.0.0.1:5432/niffler-userdata";
     }
 
     @Override
     public String currencyJdbcUrl() {
-        return "";
-    }
-
-    @Override
-    public String ghUrl() {
-        return "";
+        return "jdbc:postgresql://127.0.0.1:5432/niffler-currency";
     }
 }
