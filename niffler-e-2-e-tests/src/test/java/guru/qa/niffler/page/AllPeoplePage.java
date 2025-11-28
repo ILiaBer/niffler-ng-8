@@ -4,14 +4,14 @@ import com.codeborne.selenide.CollectionCondition;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.utils.SelenideUtils;
 import org.openqa.selenium.Keys;
 
-import static com.codeborne.selenide.Selenide.*;
 
 public class AllPeoplePage extends BasePage{
 
-    private final SelenideElement search = $("input");
-    private final ElementsCollection allPeopleRows = $$x("//table//tr");
+    private final SelenideElement search =  SelenideUtils.chromeDriver.$("input");
+    private final ElementsCollection allPeopleRows =  SelenideUtils.chromeDriver.$$x("//table//tr");
 
     public AllPeoplePage findPersonByName(String name) {
         search.sendKeys(name);
@@ -28,6 +28,4 @@ public class AllPeoplePage extends BasePage{
         allPeopleRows.shouldBe(CollectionCondition.size(count));
         return this;
     }
-
-
 }

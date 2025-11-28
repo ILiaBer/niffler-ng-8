@@ -1,6 +1,5 @@
 package guru.qa.niffler.test.web;
 
-import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.condition.Bubble;
 import guru.qa.niffler.data.condition.Color;
@@ -8,6 +7,7 @@ import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.utils.InputGenerator;
 import guru.qa.niffler.utils.RandomDataUtils;
+import guru.qa.niffler.utils.SelenideUtils;
 import org.junit.jupiter.api.Test;
 
 public class StatComponentTest extends BaseUITest {
@@ -28,7 +28,7 @@ public class StatComponentTest extends BaseUITest {
         spendDbClient.createSpend(firstSpend);
         spendDbClient.createSpend(secondSpend);
         spendDbClient.createSpend(thirdSpend);
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+         SelenideUtils.chromeDriver.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(actualLogin, actualPass);
 
         Thread.sleep(5000);
@@ -52,7 +52,7 @@ public class StatComponentTest extends BaseUITest {
         spendDbClient.createSpend(firstSpend);
         spendDbClient.createSpend(secondSpend);
         spendDbClient.createSpend(thirdSpend);
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+         SelenideUtils.chromeDriver.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(actualLogin, actualPass);
 
         Thread.sleep(5000);

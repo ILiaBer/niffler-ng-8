@@ -1,6 +1,5 @@
 package guru.qa.niffler.test.web;
 
-import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.condition.Bubble;
 import guru.qa.niffler.data.condition.Color;
@@ -16,6 +15,7 @@ import guru.qa.niffler.steps.AssertionSteps;
 import guru.qa.niffler.utils.InputGenerator;
 import guru.qa.niffler.utils.RandomDataUtils;
 import guru.qa.niffler.utils.ScreenDiffResult;
+import guru.qa.niffler.utils.SelenideUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -41,8 +41,8 @@ public class ScreenTest extends BaseUITest {
                     amount = 89000.00,
                     currency = CurrencyValues.RUB))
     @ScreenShootTest(value = "img/stats/stat_one_spend_main.png")
-    void screenOneSpendTest(BufferedImage expectedImage) throws IOException {
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+    void screenOneSpendTest(BufferedImage expectedImage) throws IOException, InterruptedException {
+         SelenideUtils.chromeDriver.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(actualLogin, actualPass);
         BufferedImage actualImage = mainPage().stat.screenshotStats();
         Assertions.assertFalse(new ScreenDiffResult(expectedImage, actualImage), "Screen comparison failure");
@@ -57,13 +57,13 @@ public class ScreenTest extends BaseUITest {
                     amount = 200,
                     currency = CurrencyValues.RUB))
     @ScreenShootTest(value = "img/stats/stat_two_spends_main.png")
-    void screenTwoSpendTest(BufferedImage expectedImage) throws IOException {
+    void screenTwoSpendTest(BufferedImage expectedImage) throws IOException, InterruptedException {
 
         SpendJson secondSpend = RandomDataUtils.generateSpend(actualLogin, 100.0);
         Bubble bubble1 = new Bubble(Color.yellow, InputGenerator.getExpectedBubbleText("Обучение1", 200.0));
         Bubble bubble2 = new Bubble(Color.green, InputGenerator.getExpectedBubbleText(secondSpend));
         spendDbClient.createSpend(secondSpend);
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+         SelenideUtils.chromeDriver.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(actualLogin, actualPass);
         BufferedImage actualImage = mainPage().stat.screenshotStats();
         spendDbClient.deleteTxSpend(secondSpend);
@@ -73,16 +73,16 @@ public class ScreenTest extends BaseUITest {
     }
 
     @ScreenShootTest(value = "img/stats/stat_without_spends.png")
-    void screenWithoutOneSpendsTest(BufferedImage expectedImage) throws IOException {
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+    void screenWithoutOneSpendsTest(BufferedImage expectedImage) throws IOException, InterruptedException {
+         SelenideUtils.chromeDriver.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(actualLogin, actualPass);
         BufferedImage actualImage = mainPage().stat.screenshotStats();
         Assertions.assertFalse(new ScreenDiffResult(expectedImage, actualImage));
     }
 
     @ScreenShootTest(value = "img/expected/expected_Kiwi.png")
-    void checkSetProfilePicture(BufferedImage expectedImage) throws IOException {
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+    void checkSetProfilePicture(BufferedImage expectedImage) throws IOException, InterruptedException {
+         SelenideUtils.chromeDriver.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(actualLogin, actualPass);
         sidebarPage().header.toProfile();
         new ProfilePage().uploadProfileImage(new File(kiwiPngPath))
@@ -95,7 +95,7 @@ public class ScreenTest extends BaseUITest {
     }
 
     @ScreenShootTest(value = "img/expected/expected_Kiwi.png")
-    void checkResetProfilePicture(BufferedImage expectedImage) throws IOException {
+    void checkResetProfilePicture(BufferedImage expectedImage) throws IOException, InterruptedException {
 
 //    @Test
 //    void checkResetProfilePicture() throws IOException {
@@ -105,13 +105,13 @@ public class ScreenTest extends BaseUITest {
 //                        "\\img\\expected\\expected_Kiwi.png"));
         userClient.clearPhotoDataByUsername(actualLogin);
         //Act
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+         SelenideUtils.chromeDriver.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(actualLogin, actualPass);
         sidebarPage().header.toProfile();
         //Загружаем обезьянку
         new ProfilePage().uploadProfileImage(new File(monkeyPngPath))
                 .clickSaveChanges();
-        Selenide.open(CFG.frontUrl() + "main");
+         SelenideUtils.chromeDriver.open(CFG.frontUrl() + "main");
         sidebarPage().header.toProfile();
         //Скриншотим обезбянку
         BufferedImage actualMonkey = profilePage().profileIcon.screenshotStats();

@@ -4,9 +4,8 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.BaseComponent;
+import guru.qa.niffler.utils.SelenideUtils;
 import org.openqa.selenium.By;
-
-import static com.codeborne.selenide.Selenide.$;
 
 public class Select extends BaseComponent {
 
@@ -19,10 +18,10 @@ public class Select extends BaseComponent {
     }
 
 
-    public Select choose(String variant){
-        $(btnLoc).shouldBe(Condition.visible);
-        $(btnLoc).scrollTo();
-        ElementsCollection countriesList= $(selectorLoc).findAll(By.xpath("//li"));
+    public Select choose(String variant) {
+         SelenideUtils.chromeDriver.$(btnLoc).shouldBe(Condition.visible);
+         SelenideUtils.chromeDriver.$(btnLoc).scrollTo();
+        ElementsCollection countriesList =  SelenideUtils.chromeDriver.$(selectorLoc).findAll(By.xpath("//li"));
         for (SelenideElement li : countriesList) {
             if (li.getText().contains(variant)) {
                 li.shouldBe(Condition.visible);

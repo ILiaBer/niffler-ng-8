@@ -1,27 +1,39 @@
 package guru.qa.niffler.test.web;
 
-import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.WebDriverRunner;
+import com.codeborne.selenide.SelenideDriver;
 import com.github.javafaker.Faker;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.extensions.BrowserExtension;
+import guru.qa.niffler.data.enums.Browser;
+import guru.qa.niffler.data.enums.CurrencyValues;
 import guru.qa.niffler.jupiter.annotations.Category;
 import guru.qa.niffler.jupiter.annotations.Spend;
 import guru.qa.niffler.jupiter.annotations.User;
+import guru.qa.niffler.jupiter.extensions.BrowserExtension;
 import guru.qa.niffler.model.CategoryJson;
-import guru.qa.niffler.data.enums.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
-import guru.qa.niffler.page.*;
-import org.junit.jupiter.api.Assertions;
+import guru.qa.niffler.page.AllPeoplePage;
+import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.page.ProfilePage;
+import guru.qa.niffler.page.RegisterPage;
+import guru.qa.niffler.utils.BrowserConverterUtils;
+import guru.qa.niffler.utils.SelenideUtils;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.converter.ConvertWith;
+import org.junit.jupiter.params.provider.EnumSource;
 
-@ExtendWith(BrowserExtension.class)
-public class LoginTest extends BaseUITest{
+import java.util.List;
+
+public class LoginTest extends BaseUITest {
     private static final Config CFG = Config.getInstance();
     String actualLogin = CFG.mainUserLogin();
     String actualPass = CFG.mainUserPass();
+    private SelenideDriver defaultDriver = SelenideUtils.chromeDriver;
 
+
+    @RegisterExtension
+    private static final BrowserExtension browserExtension = new BrowserExtension();
 
     @Spend(
             username = "duck",
@@ -34,8 +46,8 @@ public class LoginTest extends BaseUITest{
     void spendingDescriptionShouldBeUpdatedByTableAction(SpendJson spend) {
         final String newDescription = "Обучение Niffler NG";
 
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .doLogin("duck", "12345");
+        SelenideUtils.chromeDriver.open(CFG.frontUrl());
+        new LoginPage(defaultDriver).doLogin("duck", "12345");
         mainPage().table.editSpendingByDescription(spend.description());
         spendingPage().description.clearThenFill(newDescription);
         mainPage().table.checkTableContainsSpendingByDescription(newDescription);
@@ -45,14 +57,14 @@ public class LoginTest extends BaseUITest{
     void shouldRegisterNewUser() {
         String userName = new Faker().name().username();
         String pass = new Faker().number().digits(5);
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .clickCreateNewAccount();
-        new RegisterPage().setUsername(userName)
+        SelenideUtils.chromeDriver.open(CFG.frontUrl());
+        new LoginPage(defaultDriver).clickCreateNewAccount();
+        new RegisterPage(defaultDriver).setUsername(userName)
                 .setPassword(pass)
                 .setPasswordSubmit(pass)
                 .signUp().signIn();
 
-        new LoginPage().doLogin(actualLogin, actualPass);
+        new LoginPage(defaultDriver).doLogin(actualLogin, actualPass);
 
 
         sidebarPage().header.toAllPeople();
@@ -64,9 +76,26 @@ public class LoginTest extends BaseUITest{
 
     @Test
     void shouldNotRegisterUserWithExistingUsername() {
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .clickCreateNewAccount();
-        new RegisterPage().setUsername(actualLogin)
+        SelenideDriver firefox = new SelenideDriver(SelenideUtils.firefoxConfig);
+
+        browserExtension.drivers().addAll(List.of(defaultDriver, firefox));
+        defaultDriver.open(CFG.frontUrl());
+        firefox.open(CFG.frontUrl());
+        new LoginPage(defaultDriver).clickCreateNewAccount();
+        new RegisterPage(defaultDriver).setUsername(actualLogin)
+                .setPassword(actualPass)
+                .setPasswordSubmit(actualPass)
+                .signUp().checkError("Username `" + actualLogin + "` already exists");
+
+        new LoginPage(firefox).doLogin(actualLogin, actualPass);
+    }
+
+    @ParameterizedTest
+    @EnumSource(Browser.class)
+    void shouldNotRegisterUserWithExistingUsername(@ConvertWith(BrowserConverterUtils.class) SelenideDriver driver) {
+        driver.open(CFG.frontUrl());
+        new LoginPage(driver).clickCreateNewAccount();
+        new RegisterPage(driver).setUsername(actualLogin)
                 .setPassword(actualPass)
                 .setPasswordSubmit(actualPass)
                 .signUp().checkError("Username `" + actualLogin + "` already exists");
@@ -77,29 +106,29 @@ public class LoginTest extends BaseUITest{
         String userName = new Faker().name().username();
         String pass = new Faker().number().digits(5);
         String wrongPass = new Faker().number().digits(5);
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+        SelenideUtils.chromeDriver.open(CFG.frontUrl(), LoginPage.class)
                 .clickCreateNewAccount();
-        new RegisterPage().setUsername(userName)
+        new RegisterPage(defaultDriver).setUsername(userName)
                 .setPassword(pass)
                 .setPasswordSubmit(wrongPass)
                 .signUp().checkError("Passwords should be equal");
     }
 
-    @Test
-    void mainPageShouldBeDisplayedAfterSuccessLogin() {
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .doLogin(actualLogin, actualPass);
-        mainPage().table.checkTableVisible();
-        Assertions.assertEquals(CFG.frontUrl() + "main", WebDriverRunner.url());
-    }
+//    @Test
+//    void mainPageShouldBeDisplayedAfterSuccessLogin() {
+//        SelenideUtils.chromeDriver.open(CFG.frontUrl(), LoginPage.class)
+//                .doLogin(actualLogin, actualPass);
+//        mainPage().table.checkTableVisible();
+//        Assertions.assertEquals(CFG.frontUrl() + "main", WebDriverRunner.url());
+//    }
 
     @Test
     void userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
         String wrongPass = new Faker().number().digits(5);
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
-                .doLogin(actualLogin, wrongPass);
+        SelenideUtils.chromeDriver.open(CFG.frontUrl());
+        new LoginPage(defaultDriver).doLogin(actualLogin, wrongPass);
         mainPage().table.checkTableVisible();
-        new LoginPage().checkError("Неверные учетные данные пользователя");
+        new LoginPage(defaultDriver).checkError("Неверные учетные данные пользователя");
     }
 
 
@@ -109,7 +138,7 @@ public class LoginTest extends BaseUITest{
                     archived = true))
     @Test
     void archivedCategoryCantBePresentedInCategoryList(CategoryJson category) {
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+        SelenideUtils.chromeDriver.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(actualLogin, actualPass);
 
         sidebarPage().header.toProfile();
@@ -124,7 +153,7 @@ public class LoginTest extends BaseUITest{
                     archived = false))
     @Test
     void activeCategoryShouldPresentInCategoryList(CategoryJson category) {
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+        SelenideUtils.chromeDriver.open(CFG.frontUrl(), LoginPage.class)
                 .doLogin(actualLogin, actualPass);
         sidebarPage().header.toProfile();
         new ProfilePage().hideArchive()

@@ -1,38 +1,38 @@
 package guru.qa.niffler.page;
 
-import static com.codeborne.selenide.Selenide.page;
+import guru.qa.niffler.utils.SelenideUtils;
 
 public class AllPages {
 
     protected AllPeoplePage allPeoplePage() {
-        return page(AllPeoplePage.class);
+        return SelenideUtils.chromeDriver.page(AllPeoplePage.class);
     }
 
     protected SpendingPage spendingPage() {
-        return page(SpendingPage.class);
+        return SelenideUtils.chromeDriver.page(SpendingPage.class);
     }
 
     protected FriendsPage friendsPage() {
-        return page(FriendsPage.class);
+        return SelenideUtils.chromeDriver.page(FriendsPage.class);
     }
 
     protected LoginPage loginPage() {
-        return page(LoginPage.class);
+        return SelenideUtils.chromeDriver.page(LoginPage.class);
     }
 
     protected MainPage mainPage() {
-        return page(MainPage.class);
+        return SelenideUtils.chromeDriver.page(MainPage.class);
     }
 
     protected ProfilePage profilePage() {
-        return page(ProfilePage.class);
+        return SelenideUtils.chromeDriver.page(ProfilePage.class);
     }
 
     protected RegisterPage registerPage() {
-        return page(RegisterPage.class);
+        return SelenideUtils.chromeDriver.page(RegisterPage.class);
     }
 
     protected SidebarPage sidebarPage() {
-        return page(SidebarPage.class);
+        return SelenideUtils.chromeDriver.page(SidebarPage.class);
     }
 }
